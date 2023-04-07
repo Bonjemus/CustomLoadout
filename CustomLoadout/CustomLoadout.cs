@@ -1,25 +1,28 @@
-﻿using Synapse.Api.Plugin;
+﻿using Neuron.Core.Plugins;
+using Synapse3.SynapseModule;
+using Synapse3.SynapseModule.Events;
 
 namespace CustomLoadout
 {
-    [PluginInformation(
-        Author = "AlmightyLks",
-        Description = "Configure roles' inventories",
+    [Plugin(
+        Author = "AlmightyLks updated by Bonjemus",
+        Description = "Configure roles' inventories.",
         Name = "CustomLoadout",
-        LoadPriority = int.MinValue,
-        SynapseMajor = 2,
-        SynapseMinor = 1,
-        SynapsePatch = 0,
-        Version = "1.1.2"
+        Version = "2.0.1",
+        Repository = "https://github.com/Bonjemus/CustomLoadout",
+        Website = "https://discord.gg/TmYJ9PhrmC"
         )]
-    public class CustomLoadout : AbstractPlugin
+    public class CustomLoadout : ReloadablePlugin
     {
-        [Synapse.Api.Plugin.Config(section = "CustomLoadout")]
-        public static PluginConfig Config;
-        public override void Load()
+        public PluginConfig Config { get; private set; }
+
+        public PluginEventHandler EventHandler { get; private set; }
+
+        public override void EnablePlugin()
         {
-            SynapseController.Server.Logger.Info("<CustomLoadout> Loaded");
-            _ = new PluginEventHandler();
+            EventHandler = Synapse.GetEventHandler<PluginEventHandler>();
+            Logger.Info("CustomLoadout loaded.");
         }
+        public override void Reload(ReloadEvent _ = null) => Config = Synapse.Get<PluginConfig>();
     }
 }
